@@ -1,10 +1,6 @@
+import { prisma } from "$lib";
 import {fail, redirect} from "@sveltejs/kit"
-import {PrismaClient} from "@prisma/client"
 
-
-
-
-const prisma = new PrismaClient();
 
 
 export const load = async ({cookies}) => {
