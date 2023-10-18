@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-node';
+import adapter from "@sveltejs/adapter-node": "^1.3.1";
 import { vitePreprocess } from '@sveltejs/kit/vite';
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -13,6 +13,9 @@ const config = {
 		// See https://kit.svelte.dev/docs/adapters for more information about adapters.
 		adapter: adapter()
 	}
+	"engines": {
+		"node": ">=18"
+   }
 };
 
 export default config;
