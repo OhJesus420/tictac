@@ -5,15 +5,11 @@
   export let data;
   export let form;
 
-
-
-
 </script>
 
-
 <ul>
-{#each data.sessions as [session, message]}
-  <li><a data-sveltekit-preload-data="tap" class="sessionname" href="/sessions/{session}">{session}, {message.length}</a></li>
+{#each data.sessions as session}
+  <li><a data-sveltekit-preload-data="tap" class="sessionname" href="/sessions/{session.name}">{session.name}</a></li>
 {/each}
 </ul>
 

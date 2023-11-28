@@ -8,7 +8,7 @@
   export let form;
 
 
-  $: messages = data.message!.reverse()
+  $: messages = data.messages!.reverse()
 
   browser ? setInterval(invalidateAll, 1000) : null
 
@@ -16,9 +16,7 @@
 </script>
 
 
-
-
-<h1>Välkommen till session: {data.session}</h1>
+<h1>Välkommen till session: {data.session.name}</h1>
 
 
 <form action="?/message" method="post" use:enhance>
@@ -30,8 +28,10 @@
 </form>
 
 
+
+
 {#each messages as message}
 <div transition:fade|local>
-    {message}
+    {message.content}
 </div>  
 {/each}

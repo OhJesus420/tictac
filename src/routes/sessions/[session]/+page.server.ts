@@ -1,34 +1,66 @@
 import type { PageServerLoad } from './$types';
 
 
-import{_sessions} from "../+page.server"
 import {error, fail, type Actions} from "@sveltejs/kit"
+import { prisma} from '$lib';
 
 
-export const load = (async ({params}) => {
+
+export const load: PageServerLoad = async ({params}) => {
+    try {
     let session = params.session
-    if (!_sessions.has(session)) {
-        throw error(418, "session not found")
+
+        
+
+    let existingSession = await prisma.session.findFirst({
+        where: {name: session},
+    });
+    if (!existingSession) {
+        throw new Error("session not found")
+   
     }
-    let message = _sessions.get(session)
+    let messages = await prisma.message.findMany({
+        where: { sessionId: existingSession.id },
+    });
+    
 
+  return {session: existingSession, messages: messages};
 
-    return {session, message};
-}) satisfies PageServerLoad;
-
+} catch(error) {
+    throw error;
+}
+};
 
 export const actions: Actions={
     message:async ({request, params}) => {
-        let session = params.session
-        if(!session || !_sessions.has(session)) {
-            throw error(417, "session not found")
-        }
-        let data = await request.formData()
-        let message = data.get("message")?.toString()
+        try {
+
+        let sessionName = params.session;
+        const existingSession = await prisma.session.findFirst({
+            where: {name: sessionName}
+        });
+        let formData = await request.formData();
+        let message = formData.get("message")?.toString();
         if (!message) {
-            return fail(400, {message: "not found"})
+            return fail(400, {message: "messege not found"})
         }
-        let messages = _sessions.get(session)!
-        messages.push(message)
+        if (!existingSession) {
+            throw new Error("session not found")
+        }
+        else{
+            await prisma.message.create({
+                data: {
+                    content: message,
+                    sessionId: existingSession.id,
+                },
+            });
+        }
+
+        return {status: 200, body: {success: true} };
+    } catch (error) {
+        throw error;
     }
-}
+        
+
+    },
+};
